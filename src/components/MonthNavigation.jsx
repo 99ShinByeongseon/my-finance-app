@@ -15,7 +15,7 @@ const MonthWrapper = styled.div`
 
 const MonthButton = styled.button`
   background-color: ${(props) => (props.selected ? "#ffc062" : "#f0f0f0")};
-  color: ${(props) => (props.selected ? "#fff" : "#333")};
+  color: ${(props) => (props.selected ? "#fff" : "#000000")};
   border: none;
   padding: 10px 15px;
   border-radius: 5px;
@@ -29,11 +29,7 @@ export default function MonthNavigation({ month, setMonth }) {
     <Section>
       <MonthWrapper>
         {MONTHS.map((m) => (
-          <MonthButton
-            key={m}
-            selected={m === month}
-            onClick={() => setMonth(m)}
-          >
+          <MonthButton key={m} selected={m === month} onClick={() => setMonth(m)}>
             {m}월
           </MonthButton>
         ))}
