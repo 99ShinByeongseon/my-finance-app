@@ -1,25 +1,62 @@
+import { Section } from "../pages/Home";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-const Section = styled.section`
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 20px;
-`;
-
-const ListWrapper = styled.div`
+const ExpenseItemList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 `;
 
 const ExpenseItem = styled.div`
-  background-color: #ffc062;
-  padding: 15px;
-  border-radius: 8px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  span {
+    font-size: 16px;
+    color: #333;
+  }
+
+  span:last-child {
+    font-weight: bold;
+    color: #ffc062;
+  }
+`;
+
+const ExpenseDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  span {
+    &:first-child {
+      margin-bottom: 4px;
+      color: #666;
+      font-size: 14px;
+    }
+    &:last-child {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+  }
 `;
 
 export default function ExpenseList({ expenses }) {
@@ -27,26 +64,20 @@ export default function ExpenseList({ expenses }) {
 
   return (
     <Section>
-      {expenses.length === 0 ? (
-        <p>지출 내역이 없습니다.</p>
-      ) : (
-        <ListWrapper>
-          {expenses.map((expense) => (
-            <ExpenseItem
-              key={expense.id}
-              onClick={() => navigate(`/expenses/${expense.id}`)}
-            >
-              <div>
-                <div>{expense.date}</div>
-                <div>
-                  {expense.item} - {expense.description}
-                </div>
-              </div>
-              <div>{expense.amount} 원</div>
-            </ExpenseItem>
-          ))}
-        </ListWrapper>
-      )}
+      <ExpenseItemList>
+        {expenses.map((expense) => (
+          <ExpenseItem
+            key={expense.id}
+            onClick={() => navigate(`/detail/${expense.id}`)}
+          >
+            <ExpenseDetails>
+              <span>{expense.date}</span>
+              <span>{`${expense.item} - ${expense.description}`}</span>
+            </ExpenseDetails>
+            <span>{expense.amount.toLocaleString()} 원</span>
+          </ExpenseItem>
+        ))}
+      </ExpenseItemList>
     </Section>
   );
 }
