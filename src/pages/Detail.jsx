@@ -5,63 +5,76 @@ import { useNavigate, useParams } from "react-router-dom";
 const Container = styled.div`
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: #ffffff;
+  padding: 24px;
+  background-color: #fff;
   border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 `;
 
 const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 
   label {
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     font-size: 14px;
-    color: #000000;
-    text-align: left;
+    color: #444;
   }
 
   input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
     font-size: 14px;
+    transition: border-color 0.2s;
+    &:focus {
+      border-color: #2ec4b6;
+      outline: none;
+    }
   }
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 12px;
 `;
 
 const Button = styled.button`
-  padding: 10px 20px;
-  background-color: ${(props) => (props.danger ? "#ff4d4d" : "#007bff")};
-  color: white;
+  padding: 12px 24px;
+  background-color: ${(props) => (props.danger ? "#ff4d4d" : "#2ec4b6")};
+  color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${(props) => (props.danger ? "#cc0000" : "#0056b3")};
+    background-color: ${(props) => (props.danger ? "#cc0000" : "#249f9f")};
   }
 `;
 
 const BackButton = styled(Button)`
   background-color: #6c757d;
-
   &:hover {
     background-color: #5a6268;
   }
 `;
 
-export default function Detail({ expenses = [], setExpenses }) {
+export default function Detail({ expenses, setExpenses }) {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const selectedExpense = expenses.find((expense) => expense.id === id);
+  const selectedExpense = expenses ? expenses.find(expense => expense.id === id) : null;
+
+  if (!selectedExpense) {
+    return (
+      <Container>
+        <p>지출 항목을 찾을 수 없습니다.</p>
+        <BackButton onClick={() => navigate(-1)}>뒤로 가기</BackButton>
+      </Container>
+    );
+  }
 
   const [date, setDate] = useState(selectedExpense.date);
   const [item, setItem] = useState(selectedExpense.item);
@@ -78,20 +91,16 @@ export default function Detail({ expenses = [], setExpenses }) {
       alert("유효한 항목과 금액을 입력해주세요.");
       return;
     }
-    if (!selectedExpense) {
-      return <div>선택한 지출 항목을 찾을 수 없습니다.</div>;
-    }
 
-    const newExpenses = expenses.map((expense) => {
-      if (expense.id !== id) return expense;
-      return { ...expense, date, item, amount, description };
-    });
+    const newExpenses = expenses.map(expense =>
+      expense.id !== id ? expense : { ...expense, date, item, amount, description }
+    );
     setExpenses(newExpenses);
     navigate("/");
   };
 
   const deleteExpense = () => {
-    const newExpenses = expenses.filter((expense) => expense.id !== id);
+    const newExpenses = expenses.filter(expense => expense.id !== id);
     setExpenses(newExpenses);
     navigate("/");
   };
@@ -140,9 +149,7 @@ export default function Detail({ expenses = [], setExpenses }) {
       </InputGroup>
       <ButtonGroup>
         <Button onClick={editExpense}>수정</Button>
-        <Button danger onClick={deleteExpense}>
-          삭제
-        </Button>
+        <Button danger onClick={deleteExpense}>삭제</Button>
         <BackButton onClick={() => navigate(-1)}>뒤로 가기</BackButton>
       </ButtonGroup>
     </Container>

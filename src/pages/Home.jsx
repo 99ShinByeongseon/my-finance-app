@@ -6,15 +6,21 @@ import MonthNavigation from "../components/MonthNavigation";
 import CreateExpense from "../components/CreateExpense";
 import ExpenseList from "../components/ExpenseList";
 
+export const Section = styled.section`
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+`;
+
 const Container = styled.main`
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
 `;
 
-export default function Home() {
+export default function Home({ expenses: initialExpenses, setExpenses: setInitialExpenses }) {
   const [month, setMonth] = useState(1);
-  const [expenses, setExpenses] = useState([]);
+  const [expenses, setExpenses] = useState(initialExpenses || []);
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -39,7 +45,7 @@ export default function Home() {
   return (
     <Container>
       <MonthNavigation month={month} setMonth={setMonth} />
-      <CreateExpense month={month} addExpense={addExpense} />
+      <CreateExpense month={month} expenses={expenses} setExpenses={setExpenses} addExpense={addExpense} />
       <ExpenseList expenses={filteredExpenses} />
     </Container>
   );
